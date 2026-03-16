@@ -9,7 +9,11 @@ permissions:
 
 jobs:
   dismiss-copilot-review:
-    if: ${{ github.event.review.user.login == 'copilot-pull-request-reviewer[bot]' }}
+    if: >-
+      ${{
+        github.event.review.user.login == 'Copilot' ||
+        github.actor == 'Copilot'
+      }}
     runs-on: ubuntu-latest
 
     steps:
@@ -21,6 +25,5 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.payload.pull_request.number,
               review_id: context.payload.review.id,
-              message: "Automatically dismissed Copilot review.",
-              event: "DISMISS",
+              message: "Automatically dismissed Copilot review."
             });

@@ -1,0 +1,26 @@
+name: Auto-dismiss Copilot reviews
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  dismiss-copilot-review:
+    if: ${{ github.event.review.user.login == 'copilot-pull-request-reviewer[bot]' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.pulls.dismissReview({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              review_id: context.payload.review.id,
+              message: "Automatically dismissed Copilot review.",
+              event: "DISMISS",
+            });
